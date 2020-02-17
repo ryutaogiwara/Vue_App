@@ -31549,7 +31549,7 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
-  template: '<h1>welcome vue.js!</h1>'
+  template: '<h1>git!</h1>'
 });
 
 /***/ }),
