@@ -1,5 +1,5 @@
 <template>
-  <nav class="nav-var">
+  <nav class="navbar">
     <!-- aタグの代わりにRouterLinkを用いる。Getリクエストが発生せずvuerouterにて画面を切り替える。 -->
     <RouterLink class="navbar__brand" to="/">
       Vuesplash
