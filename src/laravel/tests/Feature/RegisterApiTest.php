@@ -18,10 +18,10 @@ class RegisterApiTest extends TestCase
     public function shouls_新しいユーザーを追加して返却する()
     {
         $data = [
-            'name' => 'hoge user',
+            'name' => 'hogeuser',
             'email' => 'dummy@email.jp',
             'password' => 'password',
-            'passwaord_confirmation' => 'password'
+            'password_confirmation' => 'password'
         ];
 
         // ユーザー登録
