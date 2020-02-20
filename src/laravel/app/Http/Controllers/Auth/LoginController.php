@@ -39,8 +39,18 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    // ログイン後に行われる処理のオーバーライド
     protected function authenticated(Request $request, $user)
     {
         return $user;
+    }
+
+    // ログアウト後に行われる処理のオーバーライド
+    protected function loggedOut(Request $request)
+    {
+        // セッションを再生成する
+        $request->session()->regenerate();
+
+        return response()->json();
     }
 }
