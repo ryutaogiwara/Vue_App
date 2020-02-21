@@ -19,7 +19,13 @@ const actions = {
     const response = await axios.post('/api/register', data)
     // commitでmutation呼び出し→stateを更新
     context.commit('setUser', response.data)
-  }
+  },
+
+  // loginアクション
+  async login(context, data) {
+    const response = await axios.post('/api/login', data)
+    context.commit('setUser', response.data)
+  },
 }
 
 export default {
