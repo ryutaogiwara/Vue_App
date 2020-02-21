@@ -1,4 +1,5 @@
-require('./bootstrap');
+// 先頭に固定
+import './bootstrap'
 
 import Vue from 'vue'
 
