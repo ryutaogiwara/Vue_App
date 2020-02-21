@@ -64,10 +64,11 @@ export default {
   },
 
   methods: {
-    login () {
-      console.log(this.loginForm)
+    async login () {
+      await this.$store.dispatch('auth/login', this.loginForm)
+      this.$router.push('/')
     },
-    
+
     async register () {
       // authストアのregisterアクションを呼び出す
       await this.$store.dispatch('auth/register', this.registerForm)
