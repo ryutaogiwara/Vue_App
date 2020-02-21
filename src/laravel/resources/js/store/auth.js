@@ -13,6 +13,7 @@ const mutations = {
 }
 
 const actions = {
+  // registerアクション
   async register(context, data) {
     // apiを叩く
     const response = await axios.post('/api/register', data)
