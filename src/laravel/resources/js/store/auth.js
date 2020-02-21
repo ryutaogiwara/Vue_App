@@ -26,6 +26,14 @@ const actions = {
     const response = await axios.post('/api/login', data)
     context.commit('setUser', response.data)
   },
+
+  // logoutアクション
+  async logout(context) {
+    // logoutにユーザー情報は比喩等ないので引数にdataは必要ない
+    const response = await axios.post('/api/logout')
+    // setUserをnullにすることでユーザー情報を未ログイン状態に戻す
+    context.commit('setUser', null)
+  }
 }
 
 export default {
