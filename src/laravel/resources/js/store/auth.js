@@ -38,6 +38,16 @@ const actions = {
     const response = await axios.post('/api/logout')
     // setUserをnullにすることでユーザー情報を未ログイン状態に戻す
     context.commit('setUser', null)
+  },
+
+  // ユーザーデータ取得
+  async currentUser(context) {
+    // userAPIを叩いてユーザー情報の取得
+    const response = await axios.get('/api/user')
+    // ユーザー情報が得られれば変数userに、なければnullを代入
+    const user = response.data || null
+    // setUserを呼び出し、stateの書き換え
+    context.commit('setUser', user)
   }
 }
 
