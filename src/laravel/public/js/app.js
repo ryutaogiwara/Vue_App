@@ -3497,24 +3497,29 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "navbar__menu" }, [
-        _vm._m(0),
+        _vm.isLogin
+          ? _c("div", { staticClass: "navbar__item" }, [_vm._m(0)])
+          : _vm._e(),
         _vm._v(" "),
-        _c("span", { staticClass: "navbar__item" }, [
-          _vm._v("\n      user name\n    ")
-        ]),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "navbar__item" },
-          [
-            _c(
-              "RouterLink",
-              { staticClass: "button button__link", attrs: { to: "/login" } },
-              [_vm._v("\n        Login / Regiser\n      ")]
+        _vm.isLogin
+          ? _c("span", { staticClass: "navbar__item" }, [
+              _vm._v("\n      " + _vm._s(_vm.username) + "\n    ")
+            ])
+          : _c(
+              "div",
+              { staticClass: "navbar__item" },
+              [
+                _c(
+                  "RouterLink",
+                  {
+                    staticClass: "button button__link",
+                    attrs: { to: "/login" }
+                  },
+                  [_vm._v("\n        Login / Regiser\n      ")]
+                )
+              ],
+              1
             )
-          ],
-          1
-        )
       ])
     ],
     1
@@ -3525,11 +3530,9 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "navbar__item" }, [
-      _c("button", { staticClass: "button" }, [
-        _c("i", { staticClass: "icon ion-md-add" }),
-        _vm._v("\n        Submit a photo\n      ")
-      ])
+    return _c("button", { staticClass: "button" }, [
+      _c("i", { staticClass: "icon ion-md-add" }),
+      _vm._v("\n        Submit a photo\n      ")
     ])
   }
 ]
@@ -20437,7 +20440,7 @@ var getters = {
     return !!state.user;
   },
   username: function username(state) {
-    return state.user ? state.user.mame : '';
+    return state.user ? state.user.name : '';
   }
 };
 var mutations = {
