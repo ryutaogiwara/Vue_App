@@ -4,7 +4,9 @@ const state = {
 }
 
 const getters = {
-  check: state => !! state.user,
+  // ログインチェック
+  check: state => !!state.user,
+  // ログインユーザー名検索
   username: state => state.user ? state.user.name : ''
 }
 
