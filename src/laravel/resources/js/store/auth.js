@@ -9,7 +9,7 @@ const state = {
 
 const getters = {
   // ログインチェック
-  check: state => !!state.user,
+  check: state => !! state.user,
   // ログインユーザー名検索
   username: state => state.user ? state.user.name : ''
 }
@@ -52,7 +52,7 @@ const actions = {
 
     context.commit('setApiStatus', false)
     // { root: true }は異なるストア間('setApiStatus'と'error/SetCode'など)のミューテーションを呼び出す際に必要
-    context.commit('error/SetCode', response.status, { root: true })
+    context.commit('error/setCode', response.status, { root: true })
   },
 
   // logoutアクション
