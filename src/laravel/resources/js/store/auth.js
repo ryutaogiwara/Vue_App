@@ -1,6 +1,10 @@
+// ステータスコードのインポート
+import { OK } from '../util'
+
 const state = {
   // デフォルト値
-  user: null
+  user: null,
+  apiStatus: null
 }
 
 const getters = {
@@ -14,6 +18,11 @@ const mutations = {
   setUser(state, user) {
     // ユーザーデータのセット
     state.user = user
+  },
+
+  setApiStatus(state, status) {
+    // apiステータスのセット
+    state.apiStatus = status
   }
 }
 
