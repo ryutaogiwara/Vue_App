@@ -63,10 +63,23 @@ export default {
     }
   },
 
+  // 算出プロパティ
+  computed: {
+    // apiStatusはt/fで返される
+    apiStatus () {
+      return this.$store.state.auth.apiStatus
+    }
+  },
+
   methods: {
     async login () {
+      // authストアのloginアクションを呼び出す
       await this.$store.dispatch('auth/login', this.loginForm)
-      this.$router.push('/')
+
+      // apiStatusがtrueだった場合のみトップページに遷移
+      if (this.apiStatus) {
+        this.$router.push('/')
+      }
     },
 
     async register () {
