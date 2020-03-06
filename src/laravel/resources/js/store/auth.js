@@ -37,8 +37,22 @@ const actions = {
 
   // loginアクション
   async login(context, data) {
+    context.commit('setApiStatus', null)
+
+    // responseには処理が成功した場合、dataが代入される。失敗した場合はerrが配列形式で代入される
     const response = await axios.post('/api/login', data)
-    context.commit('setUser', response.data)
+      .catch(err => err.response || err)
+    
+    // responseの値を参照して処理を出し分ける
+    if (response.status === OK) {
+      context.commit('setApiStatus', true)
+      context.commit('setUser', response.data)
+      return false
+    }
+
+    context.commit('setApiStatus', false)
+    // { root: true }は異なるストア間('setApiStatus'と'error/SetCode'など)のミューテーションを呼び出す際に必要
+    context.commit('error/SetCode', response.status, { root: true })
   },
 
   // logoutアクション
