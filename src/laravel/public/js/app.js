@@ -20690,7 +20690,7 @@ var actions = {
             case 8:
               context.commit('setApiStatus', false); // { root: true }は異なるストア間('setApiStatus'と'error/SetCode'など)のミューテーションを呼び出す際に必要
 
-              context.commit('error/SetCode', response.status, {
+              context.commit('error/setCode', response.status, {
                 root: true
               });
 
