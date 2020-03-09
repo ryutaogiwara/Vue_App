@@ -2240,7 +2240,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }, _callee2);
       }))();
+    },
+    // バリデーションエラーメッセージのリセット
+    clearError: function clearError() {
+      this.$store.commit('auth/setLoginErrorMessages', null);
     }
+  },
+  // clearError関数の呼び出し。ログインページを表示するたびにエラーメッセージをリセットするため
+  created: function created() {
+    this.clearError();
   }
 });
 

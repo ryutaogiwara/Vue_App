@@ -100,7 +100,17 @@ export default {
 
       // リダイレクトの代用
       this.$router.push('/')
+    },
+
+    // バリデーションエラーメッセージのリセット
+    clearError () {
+      this.$store.commit('auth/setLoginErrorMessages', null)
     }
+  },
+
+  // clearError関数の呼び出し。ログインページを表示するたびにエラーメッセージをリセットするため
+  created () {
+    this.clearError()
   }
 }
 </script>
