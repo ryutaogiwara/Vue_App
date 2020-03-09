@@ -20263,6 +20263,14 @@ window.axios.interceptors.request.use(function (config) {
   // クッキーからトークンを取り出してヘッダーに添付する
   config.headers['X-XSRF-TOKEN'] = Object(_util__WEBPACK_IMPORTED_MODULE_0__["getCookieValue"])('XSRF-TOKEN');
   return config;
+}); // インターセプター(バリデーションエラー)
+
+window.axios.interceptors.response.use( // 第一引数には成功時の処理
+function (response) {
+  return response;
+}, // 第二引数には失敗時の処理 ここではエラー内容を配列で返す
+function (error) {
+  return error.response || error;
 });
 
 /***/ }),
@@ -20661,7 +20669,8 @@ var state = {
   // デフォルト値
   user: null,
   apiStatus: null,
-  loginErrorMessages: null
+  loginErrorMessages: null,
+  registerErrorMessages: null
 };
 var getters = {
   // ログインチェック
@@ -20684,6 +20693,9 @@ var mutations = {
   },
   setLoginErrorMessages: function setLoginErrorMessages(state, messages) {
     state.loginErrorMessages = messages;
+  },
+  setRegisterErrorMessages: function setRegisterErrorMessages(state, messages) {
+    state.registerErrorMessages = messages;
   }
 };
 var actions = {
@@ -20697,15 +20709,34 @@ var actions = {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              _context.next = 2;
+              context.commit('setApiStatus', null);
+              _context.next = 3;
               return axios.post('/api/register', data);
 
-            case 2:
+            case 3:
               response = _context.sent;
-              // commitでmutation呼び出し→stateを更新
-              context.commit('setUser', response.data);
 
-            case 4:
+              if (!(response.status === _util__WEBPACK_IMPORTED_MODULE_1__["CREATED"])) {
+                _context.next = 8;
+                break;
+              }
+
+              context.commit('setApiStatus', true);
+              context.commit('setUser', response.data);
+              return _context.abrupt("return", false);
+
+            case 8:
+              context.commit('setApiStatus', false);
+
+              if (response.status === _util__WEBPACK_IMPORTED_MODULE_1__["UNPROCESSABLE_ENTITY"]) {
+                context.commit('setRegisterErrorMessages', response.data.errors);
+              } else {
+                context.commit('error/setCode', response.status, {
+                  root: true
+                });
+              }
+
+            case 10:
             case "end":
               return _context.stop();
           }
