@@ -1,10 +1,11 @@
 // ステータスコードのインポート
-import { OK } from '../util'
+import { OK, UNPROCESSABLE_ENTITY } from '../util'
 
 const state = {
   // デフォルト値
   user: null,
-  apiStatus: null
+  apiStatus: null,
+  loginErrorMessages: null
 }
 
 const getters = {
@@ -23,6 +24,10 @@ const mutations = {
   setApiStatus(state, status) {
     // apiステータスのセット
     state.apiStatus = status
+  },
+
+  setLoginErrorMessages(state, messages) {
+    state.loginErrorMessages = messages
   }
 }
 
@@ -51,8 +56,13 @@ const actions = {
     }
 
     context.commit('setApiStatus', false)
-    // { root: true }は異なるストア間('setApiStatus'と'error/SetCode'など)のミューテーションを呼び出す際に必要
-    context.commit('error/setCode', response.status, { root: true })
+    if (response.status === UNPROCESSABLE_ENTITY) {
+      context.commit('setLoginErrorMessages', response.data.errors)
+    } else {
+      // { root: true }は異なるストア間('setApiStatus'と'error/SetCode'など)のミューテーションを呼び出す際に必要
+      context.commit('error/setCode', response.status, { root: true })
+    }
+
   },
 
   // logoutアクション
