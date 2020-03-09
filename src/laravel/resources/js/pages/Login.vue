@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   data () {
     return {
@@ -73,14 +74,18 @@ export default {
 
   // 算出プロパティ
   computed: {
-    // apiStatusはt/fで返される
-    apiStatus () {
-      return this.$store.state.auth.apiStatus
-    },
+    ...mapState({
+      apiStatus: state => state.auth.apiStatus,
+      loginErrors: state => state.auth.loginErrorMessages
+    })
+    // // apiStatusはt/fで返される
+    // apiStatus () {
+    //   return this.$store.state.auth.apiStatus
+    // },
 
-    loginErrors () {
-      return this.$store.state.auth.loginErrorMessages
-    }
+    // loginErrors () {
+    //   return this.$store.state.auth.loginErrorMessages
+    // }
   },
 
   methods: {
