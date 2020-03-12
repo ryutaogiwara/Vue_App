@@ -17,6 +17,14 @@
     <!-- v-showでtab状態を参照し、viewを切り替えているように見せる -->
     <div class="panel" v-show="tab === 1">
       <form class="form" @submit.prevent="login">
+        <div v-if="loginErrors" class="errors">
+          <ul v-if="loginErrors.email">
+            <li v-for="msg in loginErrors.email" :key="msg">{{ msg }}</li>
+          </ul>
+          <ul v-if="loginErrors.password">
+            <li v-for="msg in loginErrors.password" :key="msg">{{ msg }}</li>
+          </ul>
+        </div>
         <label for="login-email">Email</label>
         <input type="text" class="form__item" id="login-email" v-model="loginForm.email">
         <label for="login-password">Password</label>
@@ -29,6 +37,17 @@
 
     <div class="panel" v-show="tab === 2">
       <form class="form" @submit.prevent="register">
+        <div v-if="registerErrors" class="errors">
+          <ul v-if="registerErrors.name">
+            <li v-for="msg in registerErrors.name" :key="msg">{{ msg }}</li>
+          </ul>
+          <ul v-if="registerErrors.email">
+            <li v-for="msg in registerErrors.email" :key="msg">{{ msg }}</li>
+          </ul>
+          <ul v-if="registerErrors.password">
+            <li v-for="msg in registerErrors.password" :key="msg">{{ msg }}</li>
+          </ul>
+        </div>
         <label for="username">Name</label>
         <input type="text" class="form__item" id="username" v-model="registerForm.name">
         <label for="email">Email</label>
@@ -46,6 +65,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   data () {
     return {
@@ -65,10 +85,19 @@ export default {
 
   // 算出プロパティ
   computed: {
-    // apiStatusはt/fで返される
-    apiStatus () {
-      return this.$store.state.auth.apiStatus
-    }
+    ...mapState({
+      apiStatus: state => state.auth.apiStatus,
+      loginErrors: state => state.auth.loginErrorMessages,
+      registerErrors: state => state.auth.registerErrorMessages
+    })
+    // // apiStatusはt/fで返される
+    // apiStatus () {
+    //   return this.$store.state.auth.apiStatus
+    // },
+
+    // loginErrors () {
+    //   return this.$store.state.auth.loginErrorMessages
+    // }
   },
 
   methods: {
@@ -86,9 +115,22 @@ export default {
       // authストアのregisterアクションを呼び出す
       await this.$store.dispatch('auth/register', this.registerForm)
 
-      // リダイレクトの代用
-      this.$router.push('/')
+      if (this.apiStatus) {
+        // レダイレクト
+        this.$router.push('/')
+      }
+    },
+
+    // バリデーションエラーメッセージのリセット
+    clearError () {
+      this.$store.commit('auth/setLoginErrorMessages', null)
+      this.$store.commit('auth/setRegisterErrorMessages', null)
     }
+  },
+
+  // clearError関数の呼び出し。ログインページを表示するたびにエラーメッセージをリセットするため
+  created () {
+    this.clearError()
   }
 }
 </script>
