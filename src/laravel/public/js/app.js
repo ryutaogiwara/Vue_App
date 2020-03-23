@@ -2135,6 +2135,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   // 親要素(navbar)側で制御を行うためpropsを用いる
   // propsに送られたvalueを参照して小要素(PhotoForm)の内容が決まる
@@ -2144,6 +2147,52 @@ __webpack_require__.r(__webpack_exports__);
       type: Boolean,
       // requiredがないとエラーなどで真偽値情報が飛んだ時に動作しなくなる
       required: true
+    }
+  },
+  data: function data() {
+    return {
+      // previewにはプレビュー画像のデータURLが入る。初期値はnull
+      preview: null
+    };
+  },
+  methods: {
+    // プレビューリセット
+    reset: function reset() {
+      // プレビューを消す
+      this.preview = ''; // inputデータを消す this.$el.querySelectorはコンポーネントそのもののDOMを探すためのもの
+
+      this.$el.querySelector('input[type="file"]').value = null;
+    },
+    // フォームでファイルが選択されたら発火
+    onFileChange: function onFileChange(event) {
+      var _this = this;
+
+      // エラーハンドリング1 何も選択されていなかったら処理中断
+      if (event.target.files.length === 0) {
+        this.reset();
+        return false;
+      } // エラーハンドリング2 画像ファイル以外が選択されていたら処理中断
+
+
+      if (!event.target.files[0].type.match('image.*')) {
+        this.reset();
+        return false;
+      } // FileReaderクラスのインスタンスを取得
+
+
+      var reader = new FileReader(); // ファイルを読み込み終わったタイミングで実行する処理
+
+      reader.onload = function (e) {
+        // previewに読み込み結果（データURL）を代入する
+        // previewに値が入ると<output>につけたv-ifがtrueと判定される
+        // また<output>内部の<img>のsrc属性はpreviewの値を参照しているので
+        // 結果として画像が表示される
+        _this.preview = e.target.result;
+      }; // ファイルを読み込む
+      // 読み込まれたファイルはデータURL形式で受け取れる（上記onload参照）
+
+
+      reader.readAsDataURL(event.target.files[0]);
     }
   }
 });
@@ -3732,7 +3781,21 @@ var render = function() {
     [
       _c("h2", { staticClass: "title" }, [_vm._v("Submit a photo")]),
       _vm._v(" "),
-      _vm._m(0)
+      _c("form", { staticClass: "form" }, [
+        _c("input", {
+          staticClass: "form__item",
+          attrs: { type: "file" },
+          on: { change: _vm.onFileChange }
+        }),
+        _vm._v(" "),
+        _vm.preview
+          ? _c("output", { staticClass: "form__output" }, [
+              _c("img", { attrs: { src: _vm.preview, alt: "" } })
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm._m(0)
+      ])
     ]
   )
 }
@@ -3741,16 +3804,12 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("form", { staticClass: "form" }, [
-      _c("input", { staticClass: "form__item", attrs: { type: "file" } }),
-      _vm._v(" "),
-      _c("div", { staticClass: "form__button" }, [
-        _c(
-          "button",
-          { staticClass: "button button--inverse", attrs: { type: "submit" } },
-          [_vm._v("submit")]
-        )
-      ])
+    return _c("div", { staticClass: "form__button" }, [
+      _c(
+        "button",
+        { staticClass: "button button--inverse", attrs: { type: "submit" } },
+        [_vm._v("submit")]
+      )
     ])
   }
 ]
