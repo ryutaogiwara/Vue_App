@@ -1,8 +1,11 @@
 <template>
   <div v-show="value" class="photo-form">
     <h2 class="title">Submit a photo</h2>
+    <div v-show="loading" class="panel">
+      <Loader>Sending your photo...</Loader>
+    </div>
     <!-- .preventはデフォルトの送信処理を抑えるため -->
-    <form class="form" @submit.prevent="submit">
+    <form v-show="! loading" class="form" @submit.prevent="submit">
       <div class="errors" v-if="errors">
         <ul v-if="errors.photo">
           <li v-for="msg in errors.photo" :key="msg">{{ msg }}</li>
@@ -21,8 +24,13 @@
 
 <script>
 import { CREATED, UNPROCESSABLE_ENTITY } from '../util'
+import Loader from './Loader.vue'
 
 export default {
+  components: {
+    Loader
+  },
+
   // 親要素(navbar)側で制御を行うためpropsを用いる
   // propsに送られたvalueを参照して小要素(PhotoForm)の内容が決まる
   props: {
@@ -36,6 +44,8 @@ export default {
 
   data () {
     return {
+      // ロード画面の初期設定は非表示
+      loading: false,
       // previewにはプレビュー画像のデータURLが入る。初期値はnull
       preview: null,
       photo: null,
@@ -91,6 +101,9 @@ export default {
 
     // 送信
     async submit () {
+      // ロード画面を表示
+      this.loading = true
+
       // HTML5のFormDataAPIを使ってAjaxでファイル送信を行う
       const formData = new FormData()
       // onFileChangeで保持したデータを代入
@@ -98,6 +111,8 @@ export default {
 
       // APIを叩く
       const response = await axios.post('/api/photos', formData)
+
+      this.loading = false
 
       // バリデーションエラーの場合はreturn falseで処理自体を中断
       // 入力されたフォーム内容は保持したままエラーメッセージの取得に進む
