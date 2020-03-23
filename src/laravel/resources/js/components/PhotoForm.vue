@@ -1,7 +1,8 @@
 <template>
   <div v-show="value" class="photo-form">
     <h2 class="title">Submit a photo</h2>
-    <form class="form">
+    <!-- .preventはデフォルトの送信処理を抑えるため -->
+    <form class="form" @submit.prevent="submit">>
       <input class="form__item" type="file" @change="onFileChange">
       <output class="form__output" v-if="preview">
         <img :src="preview" alt="">
@@ -29,7 +30,8 @@ export default {
   data () {
     return {
       // previewにはプレビュー画像のデータURLが入る。初期値はnull
-      preview: null
+      preview: null,
+      photo: null
     }
   },
 
@@ -40,6 +42,8 @@ export default {
       this.preview = ''
       // inputデータを消す this.$el.querySelectorはコンポーネントそのもののDOMを探すためのもの
       this.$el.querySelector('input[type="file"]').value = null
+      // 保持していた画像データの情報を消す
+      this.photo = null
     },
 
     // フォームでファイルが選択されたら発火
@@ -73,6 +77,23 @@ export default {
       // 読み込まれたファイルはデータURL形式で受け取れる（上記onload参照）
       reader.readAsDataURL(event.target.files[0])
 
+      // 選択された画像をthis.photoとして保持
+      this.photo = event.target.files[0] 
+    },
+
+    // 送信
+    async submit () {
+      // HTML5のFormDataAPIを使ってAjaxでファイル送信を行う
+      const formData = new FormData()
+      // onFileChangeで保持したデータを代入
+      formData.append('photo', this.photo)
+      // APIを叩く
+      const response = await axios.post('/api/photos', formData)
+
+      this.reset()
+      // NavbarのshowFormの値とPhotoFormのinputはv-modelでバインドされている
+      // ここでfalseを返すことで投稿完了時にフォームが閉じる
+      this.$emit('input', false)
 
     }
   }
