@@ -3,6 +3,11 @@
     <h2 class="title">Submit a photo</h2>
     <!-- .preventはデフォルトの送信処理を抑えるため -->
     <form class="form" @submit.prevent="submit">
+      <div class="errors" v-if="errors">
+        <ul v-if="errors.photo">
+          <li v-for="msg in errors.photo" :key="msg">{{ msg }}</li>
+        </ul>
+      </div>
       <input class="form__item" type="file" @change="onFileChange">
       <output class="form__output" v-if="preview">
         <img :src="preview" alt="">
@@ -15,6 +20,8 @@
 </template>
 
 <script>
+import { CREATED, UNPROCESSABLE_ENTITY } from '../util'
+
 export default {
   // 親要素(navbar)側で制御を行うためpropsを用いる
   // propsに送られたvalueを参照して小要素(PhotoForm)の内容が決まる
@@ -31,7 +38,8 @@ export default {
     return {
       // previewにはプレビュー画像のデータURLが入る。初期値はnull
       preview: null,
-      photo: null
+      photo: null,
+      errors: null
     }
   },
 
@@ -87,13 +95,29 @@ export default {
       const formData = new FormData()
       // onFileChangeで保持したデータを代入
       formData.append('photo', this.photo)
+
       // APIを叩く
       const response = await axios.post('/api/photos', formData)
 
+      // バリデーションエラーの場合はreturn falseで処理自体を中断
+      // 入力されたフォーム内容は保持したままエラーメッセージの取得に進む
+      if (response.status === UNPROCESSABLE_ENTITY) {
+        this.errors = response.data.errors
+        return false
+      }
+
+      // 投稿処理終了時にリセット
       this.reset()
       // NavbarのshowFormの値とPhotoFormのinputはv-modelでバインドされている
       // ここでfalseを返すことで投稿完了時にフォームが閉じる
       this.$emit('input', false)
+
+      // responseステータスがCREATEDでない場合はエラー出力
+      if (response.status !== CREATED) {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
+
       // 投稿後は詳細ページに画面遷移
       this.$router.push(`/photos/${response.data.id}`)
     }

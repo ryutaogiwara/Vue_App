@@ -2125,6 +2125,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -2147,6 +2148,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   // 親要素(navbar)側で制御を行うためpropsを用いる
   // propsに送られたvalueを参照して小要素(PhotoForm)の内容が決まる
@@ -2162,7 +2169,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     return {
       // previewにはプレビュー画像のデータURLが入る。初期値はnull
       preview: null,
-      photo: null
+      photo: null,
+      errors: null
     };
   },
   methods: {
@@ -2231,16 +2239,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 4:
                 response = _context.sent;
 
+                if (!(response.status === _util__WEBPACK_IMPORTED_MODULE_1__["UNPROCESSABLE_ENTITY"])) {
+                  _context.next = 8;
+                  break;
+                }
+
+                _this2.errors = response.data.errors;
+                return _context.abrupt("return", false);
+
+              case 8:
+                // 投稿処理終了時にリセット
                 _this2.reset(); // NavbarのshowFormの値とPhotoFormのinputはv-modelでバインドされている
                 // ここでfalseを返すことで投稿完了時にフォームが閉じる
 
 
-                _this2.$emit('input', false); // 投稿後は詳細ページに画面遷移
+                _this2.$emit('input', false); // responseステータスがCREATEDでない場合はエラー出力
 
 
+                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_1__["CREATED"])) {
+                  _context.next = 13;
+                  break;
+                }
+
+                _this2.$store.commit('error/setCode', response.status);
+
+                return _context.abrupt("return", false);
+
+              case 13:
+                // 投稿後は詳細ページに画面遷移
                 _this2.$router.push("/photos/".concat(response.data.id));
 
-              case 8:
+              case 14:
               case "end":
                 return _context.stop();
             }
@@ -3847,6 +3876,20 @@ var render = function() {
           }
         },
         [
+          _vm.errors
+            ? _c("div", { staticClass: "errors" }, [
+                _vm.errors.photo
+                  ? _c(
+                      "ul",
+                      _vm._l(_vm.errors.photo, function(msg) {
+                        return _c("li", { key: msg }, [_vm._v(_vm._s(msg))])
+                      }),
+                      0
+                    )
+                  : _vm._e()
+              ])
+            : _vm._e(),
+          _vm._v(" "),
           _c("input", {
             staticClass: "form__item",
             attrs: { type: "file" },
