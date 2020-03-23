@@ -7,6 +7,7 @@
 
     <main>
       <div class="container">
+        <Message />
         <RouterView />
       </div>
     </main>
@@ -19,6 +20,7 @@
 
 <script>
 
+import Message from './components/Message.vue'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import { INTERNAL_SERVER_ERROR } from './util'
@@ -26,6 +28,7 @@ import { INTERNAL_SERVER_ERROR } from './util'
 
 export default {
   components: {
+    Message,
     Navbar,
     Footer
   },
