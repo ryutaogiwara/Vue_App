@@ -94,7 +94,8 @@ export default {
       // NavbarのshowFormの値とPhotoFormのinputはv-modelでバインドされている
       // ここでfalseを返すことで投稿完了時にフォームが閉じる
       this.$emit('input', false)
-
+      // 投稿後は詳細ページに画面遷移
+      this.$router.push(`/photos/${response.data.id}`)
     }
   }
 }
