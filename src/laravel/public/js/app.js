@@ -2235,9 +2235,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 // ここでfalseを返すことで投稿完了時にフォームが閉じる
 
 
-                _this2.$emit('input', false);
+                _this2.$emit('input', false); // 投稿後は詳細ページに画面遷移
 
-              case 7:
+
+                _this2.$router.push("/photos/".concat(response.data.id));
+
+              case 8:
               case "end":
                 return _context.stop();
             }
@@ -20997,6 +21000,10 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODU
 var routes = [{
   path: '/',
   component: _pages_PhotoList_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+}, {
+  path: '/photos/:id',
+  component: PhotoDetail,
+  props: true
 }, {
   path: '/login',
   component: _pages_Login_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
