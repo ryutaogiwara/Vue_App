@@ -133,6 +133,12 @@ export default {
         return false
       }
 
+      // 投稿処理が問題なく完了した場合はメッセージ登録
+      this.$store.commit('message/setContent', {
+        content: '写真が投稿されました！',
+        timeout: 6000
+      })
+
       // 投稿後は詳細ページに画面遷移
       this.$router.push(`/photos/${response.data.id}`)
     }
