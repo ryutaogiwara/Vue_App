@@ -68,7 +68,7 @@ class PhotoController extends Controller
          * paginate()メソッドはgetメソッド＋ページ送り機能がついた取得メソッド
          */
         $photos = Photo::with(['owner'])
-            ->orderBy(Photo::CREATED_AT, 'desk')->paginate();
+            ->orderBy(Photo::CREATED_AT, 'desc')->paginate();
 
         /**
          * コントローラクラスからモデルクラスのインスタンスをreturnすると自動的にlaravelがJSONに変換してレスポンスが生成される
