@@ -16,7 +16,7 @@ class PhotoController extends Controller
          * 画像保存関連は認証が必要
          * 画像一覧表示に関しては認証を必要としないためexceptで回避させる
          */
-        $this->middleware('auth')->except(['index']);
+        $this->middleware('auth')->except(['index', 'download']);
     }
 
 
