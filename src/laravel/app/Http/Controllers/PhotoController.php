@@ -12,8 +12,11 @@ use Illuminate\Support\Facades\Storage;
 class PhotoController extends Controller
 {
     public function __construct() {
-        // 画像保存関連は認証が必要
-        $this->middleware('auth');
+        /**
+         * 画像保存関連は認証が必要
+         * 画像一覧表示に関しては認証を必要としないためexceptで回避させる
+         */
+        $this->middleware('auth')->except(['index']);
     }
 
 
