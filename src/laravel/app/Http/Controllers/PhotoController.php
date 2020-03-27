@@ -56,4 +56,21 @@ class PhotoController extends Controller
         // リソースの新規作成なのでレスポンスコードは201(CREATED)を返却する
         return response($photo, 201);
     }
+
+    public function index()
+    {
+        /** 
+         * withメソッドは引数に指定したリレーションを参照してデータ取得を行う
+         * foreachなどでループ処理させる際に都度SQLを発行すると処理が遅くなるN＋1問題を回避するために用いる
+         * paginate()メソッドはgetメソッド＋ページ送り機能がついた取得メソッド
+         */
+        $photos = Photo::with(['owner'])
+            ->orderBy(Photo::CREATED_AT, 'desk')->paginate();
+
+        /**
+         * コントローラクラスからモデルクラスのインスタンスをreturnすると自動的にlaravelがJSONに変換してレスポンスが生成される
+         * JSONに変換される場合にwithで指定したリレーションは自動的に解決されるが任意に指定したアクセサは処理に含まれないためモデルクラス内で$appendプロパティに登録しておく必要がある
+         */
+        return $photos;
+    }
 }
