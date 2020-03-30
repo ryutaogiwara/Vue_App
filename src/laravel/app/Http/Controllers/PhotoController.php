@@ -12,8 +12,11 @@ use Illuminate\Support\Facades\Storage;
 class PhotoController extends Controller
 {
     public function __construct() {
-        // 画像保存関連は認証が必要
-        $this->middleware('auth');
+        /**
+         * 画像保存関連は認証が必要
+         * 画像一覧表示に関しては認証を必要としないためexceptで回避させる
+         */
+        $this->middleware('auth')->except(['index', 'download']);
     }
 
 
@@ -55,5 +58,46 @@ class PhotoController extends Controller
 
         // リソースの新規作成なのでレスポンスコードは201(CREATED)を返却する
         return response($photo, 201);
+    }
+
+    public function index()
+    {
+        /** 
+         * withメソッドは引数に指定したリレーションを参照してデータ取得を行う
+         * foreachなどでループ処理させる際に都度SQLを発行すると処理が遅くなるN＋1問題を回避するために用いる
+         * paginate()メソッドはgetメソッド＋ページ送り機能がついた取得メソッド
+         */
+        $photos = Photo::with(['owner'])
+            ->orderBy(Photo::CREATED_AT, 'desc')->paginate();
+
+        /**
+         * コントローラクラスからモデルクラスのインスタンスをreturnすると自動的にlaravelがJSONに変換してレスポンスが生成される
+         * JSONに変換される場合にwithで指定したリレーションは自動的に解決されるが任意に指定したアクセサは処理に含まれないためモデルクラス内で$appendプロパティに登録しておく必要がある
+         */
+        return $photos;
+    }
+
+    /**
+     * 写真ダウンロード
+     * @param Photo $photo
+     * @return \Illuminate\Http\Response
+     */
+    public function download(Photo $photo)
+    {
+        // 写真の存在チェック
+        if (!Storage::cloud()->exists($photo->filename)) {
+            abort(404);
+        }
+
+        // $dispositionにattachment及びfilenameを指定しておく
+        // レスポンスヘッダ Content-Disposition内に$dispositionを含めると表示ではなく保存ダイアログに切り替わる
+        $disposition = 'attachment; filename="' . $photo->filename . '"';
+        $headers = [
+            'Content-Type' => 'application/octet-stream',
+            // レスポンス内容を表示ではなく保存ログで開くため
+            'Content-Disposition' => $disposition,
+        ];
+
+        return response(Storage::cloud()->get($photo->filename), 200, $headers);
     }
 }
