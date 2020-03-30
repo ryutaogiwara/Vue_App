@@ -76,4 +76,28 @@ class PhotoController extends Controller
          */
         return $photos;
     }
+
+    /**
+     * 写真ダウンロード
+     * @param Photo $photo
+     * @return \Illuminate\Http\Response
+     */
+    public function download(Photo $photo)
+    {
+        // 写真の存在チェック
+        if (!Storage::cloud()->exists($photo->filename)) {
+            abort(404);
+        }
+
+        // $dispositionにattachment及びfilenameを指定しておく
+        // レスポンスヘッダ Content-Disposition内に$dispositionを含めると表示ではなく保存ダイアログに切り替わる
+        $disposition = 'attachment; filename="' . $photo->filename . '"';
+        $headers = [
+            'Content-Type' => 'application/octet-stream',
+            // レスポンス内容を表示ではなく保存ログで開くため
+            'Content-Disposition' => $disposition,
+        ];
+
+        return response(Storage::cloud()->get($photo->filename), 200, $headers);
+    }
 }
