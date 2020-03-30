@@ -71,7 +71,7 @@ class PhotoController extends Controller
             ->orderBy(Photo::CREATED_AT, 'desc')->paginate();
 
         /**
-         * コントローラクラスからモデルクラスのインスタンスをreturnすると自動的にlaravelがJSONに変換してレスポンスが生成される
+         * コントローラクラスからモデルクラスのインスタンスをreturnすると自動的にlaravelがJSONに変換してレスポンス(response.data)が生成される
          * JSONに変換される場合にwithで指定したリレーションは自動的に解決されるが任意に指定したアクセサは処理に含まれないためモデルクラス内で$appendプロパティに登録しておく必要がある
          */
         return $photos;
