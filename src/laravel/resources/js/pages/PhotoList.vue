@@ -27,7 +27,28 @@ export default {
   },
 
   methods: {
+    async fetchPhotos () {
+      // PhotoController@indexを呼び出す
+      const response = await axios.get('/api/photos')
 
+      // エラーハンドリング
+      if (response.status !== OK) {
+        this.$store.commit('error/setCode', response.status)
+        return false
+      }
+
+      // response.dataでAPIから取得したJSONが取得できる
+      this.photos = response.data.data
+    }
+  },
+
+  watch: {
+    $route: {
+      async handler () {
+        await this.fetchPhotos()
+      },
+      immediate: true
+    }
   }
 }
 </script>
