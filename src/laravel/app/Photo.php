@@ -27,6 +27,9 @@ class Photo extends Model
         'url',
     ];
 
+    // ページネーションの１ページあたりの表示件数
+    protected $perPage = 2;
+
 
 
     /** IDの桁数 */
