@@ -28,7 +28,7 @@ class Photo extends Model
     ];
 
     // ページネーションの１ページあたりの表示件数
-    protected $perPage = 2;
+    protected $perPage = 5;
 
 
 
