@@ -1,6 +1,12 @@
 <template>
-  <div class="panel-detail">
-    <figure class="photo-detail__pane photo-detail__image">
+  <!-- :classはv-bind:classの省略形 -->
+  <div 
+    v-if="photo" 
+    class="photo-detail"
+    :class="{ 'photo-detail--column': fullWidth }"> 
+    <figure 
+      class="photo-detail__pane photo-detail__image"
+      @click="fullWidth = ! fullWidth">
       <img :src="photo.url" alt="">
       <figcaption>Posted by {{ photo.owner.name }}</figcaption>
     </figure>
@@ -34,7 +40,9 @@ export default {
   },
   data () {
     return {
-      photo: null
+      photo: null,
+      // @clickでバインドされたクラスを付け替える
+      fullWidth: false
     }
   },
   methods:{
