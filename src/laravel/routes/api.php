@@ -23,6 +23,9 @@ Route::get('/photos', 'PhotoController@index')->name('photo.index');
 // 写真詳細
 Route::get('/photos/{id}', 'PhotoController@show')->name('photo.show');
 
+// コメント送信
+Route::post('/photos/{photo}/comments', 'PhotoController@addComment')->name('photo.comment');
+
 
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {

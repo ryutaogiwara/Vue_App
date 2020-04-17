@@ -16,7 +16,7 @@ class Photo extends Model
      * 余計な項目(user_id, filename)を表示しない
      */
     protected $visible = [
-        'id', 'owner', 'url',
+        'id', 'owner', 'url', 'comments'
     ];
 
     /** 
@@ -86,6 +86,11 @@ class Photo extends Model
         return $this->belongsTo('App\User', 'user_id', 'id', 'users');
     }
 
+    // リレーション：コメント
+    public function comments () {
+        return $this->hasMany('App\Comment')->orderBy('id', 'desc');
+    }
+    
     /**
      * ユーザー定義のアクセサ - url
      * @return string
