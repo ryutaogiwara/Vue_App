@@ -24,6 +24,12 @@
       <h2 class="photo-detail__title">
         <i class="icon ion-md-chatboxes"></i>Comments
       </h2>
+      <form>
+        <textarea class="form__item" v-model="commentContent"></textarea>
+        <div class="form__button">
+          <button type="submit" class="button button--inverse">submit comment</button>
+        </div>
+      </form>
     </div>
   </div>
 </template>
@@ -42,7 +48,8 @@ export default {
     return {
       photo: null,
       // @clickでバインドされたクラスを付け替える
-      fullWidth: false
+      fullWidth: false,
+      commentContent: ''
     }
   },
   methods:{
@@ -55,6 +62,13 @@ export default {
       }
 
       this.photo = response.data
+    },
+    async addComment () {
+      const response = await axios.post(`/api/photos/${this.id}/comments`, {
+        content: this.commentContent
+      })
+
+      this.commentContent = ''
     }
   },
   watch:{
