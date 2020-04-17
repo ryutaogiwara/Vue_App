@@ -16,6 +16,7 @@ class PhotoDetailApiTest extends TestCase
      */ 
     public function should__正しい構造のJsonを取得する()
     {
+        $this->withoutExceptionHandling();
         factory(Photo::class)->create()->each(function ($photo) {
             $photo->comments()->saveMany(factory(Comment::class, 3)->make());
         });
