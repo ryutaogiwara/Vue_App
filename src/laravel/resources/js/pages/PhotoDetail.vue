@@ -24,6 +24,17 @@
       <h2 class="photo-detail__title">
         <i class="icon ion-md-chatboxes"></i>Comments
       </h2>
+      <ul v-if="photo.comments.length > 0" class="photo-detail__comments">
+        <li
+          v-for="comment in photo.comments"
+          :key="comment.content"
+          class="photo-detail__commentItem"
+        >
+          <p class="photo-detail__commentBody">{{ comment.content }}</p>
+          <p class="photo-detail__commentInfo">{{ comment.author.name }}</p>
+        </li>
+      </ul>
+      <p v-else>No Comment yet.</p>
       <form v-if="isLogin" @submit.prevent="addComment" class="form">
         <div v-if="commentErrors" class="errors">
           <ul v-if="commentErrors.content">
@@ -89,6 +100,12 @@ export default {
         this.$store.commit('error/setCode', response.status)
         return false
       }
+
+      // コメント送信後に最新のコメントを取得
+      this.photo.comments = [
+        response.data,
+        ...this.photo.comments
+      ]
     }
   },
   watch:{
