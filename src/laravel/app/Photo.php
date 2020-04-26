@@ -90,6 +90,18 @@ class Photo extends Model
     public function comments () {
         return $this->hasMany('App\Comment')->orderBy('id', 'desc');
     }
+
+    /**
+     * リレーションシップ - usersテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function likes()
+    {
+        /** likesテーブルを中間テーブルとしてphotosテーブルとuserテーブルを多対多で関連づける
+         * ->withTimestamps()はlikesテーブルにデータが挿入された時にcreated_at,updated_atを更新するため
+         */
+        return $this->belongsToMany('App\User', 'likes')->withTimestamps();
+    }
     
     /**
      * ユーザー定義のアクセサ - url
