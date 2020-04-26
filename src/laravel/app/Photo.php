@@ -113,4 +113,13 @@ class Photo extends Model
     {
         return Storage::cloud()->url($this->attributes['filename']);
     }
+
+    /**
+     * アクセサ - likes_count
+     * @return int
+     */
+    public function getLikesCountAttribute()
+    {
+        return $this->likes->count();
+    }
 }
