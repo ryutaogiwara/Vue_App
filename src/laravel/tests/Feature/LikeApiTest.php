@@ -19,7 +19,7 @@ class LikeApiTest extends TestCase
         $this->user = factory(User::class)->create();
 
         factory(Photo::class)->create();
-        $this->photo = Photo::first;
+        $this->photo = Photo::first();
     }
 
     /**
@@ -30,7 +30,7 @@ class LikeApiTest extends TestCase
         // actingAsは認証
         $response = $this->actingAs($this->user)
             ->json('PUT', route('photo.like', [
-                'id' => $this->post->id,
+                'id' => $this->photo->id,
             ]));
 
         $response->assertStatus(200)
