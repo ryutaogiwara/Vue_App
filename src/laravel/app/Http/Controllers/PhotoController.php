@@ -69,7 +69,7 @@ class PhotoController extends Controller
          * foreachなどでループ処理させる際に都度SQLを発行すると処理が遅くなるN＋1問題を回避するために用いる
          * paginate()メソッドはgetメソッド＋ページ送り機能がついた取得メソッド
          */
-        $photos = Photo::with(['owner'])
+        $photos = Photo::with(['owner', 'likes'])
             ->orderBy(Photo::CREATED_AT, 'desc')->paginate();
 
         /**
@@ -111,7 +111,7 @@ class PhotoController extends Controller
     public function show(string $id)
     {
         // commments.authorのようにプロパティに.リレーション名でそれにひもづくデータを取得できる
-        $photo = Photo::where('id', $id)->with(['owner', 'comments.author'])->first();
+        $photo = Photo::where('id', $id)->with(['owner', 'comments.author', 'likes'])->first();
 
         return $photo ?? abort(404);
     }
