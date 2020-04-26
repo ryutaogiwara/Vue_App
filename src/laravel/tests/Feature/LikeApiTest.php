@@ -52,7 +52,7 @@ class LikeApiTest extends TestCase
         $this->actingAs($this->user)->json('PUT', route('photo.like', $param));
         // 2回目のいいね処理
         $this->actingAs($this->user)->json('PUT', route('photo.like', $param));
-)
+        // likes()はphotoモデル内で定義
         $this->assertEquals(1, $this->photo->likes()->count());
 
     }
