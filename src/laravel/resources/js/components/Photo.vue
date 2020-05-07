@@ -15,12 +15,16 @@
       :title="`View the photo by ${item.owner.name}`"
     >
       <!-- like button & download link-->
+      <!-- :classはいいねがすでにいいねがついている場合に付与するクラス -->
+      <!-- @clickイベントでlikeメソッドを呼び出していいね状態を切り替える -->
       <div class="photo__controls">
         <button
           class="photo__action photo__action--like"
+          :class="{ 'photo__action--liked': item.liked_by_user }"
           title="Like photo"
+          @click.prevent="like"
         >
-          <i class="icon ion-md-heart"></i>12
+          <i class="icon ion-md-heart"></i>{{ item.likes_count }}
         </button>
 
         <!-- ダウンロード昨日はvueのRouterLinkではなくサーバー再度で行うためaタグで用意する必要がある -->
@@ -45,12 +49,23 @@
 </template>
 
 <script>
+// PhotoList->Photo.vueの階層構造を持つ
 export default {
   props: {
     item: {
       type: Object,
       required: true
     }
+  },
+
+  methods: {
+    like () {
+      this.$emit('like', {
+        id: this.item.id,
+        liked: this.item.liked_by_user,
+      })
+    }
   }
 }
 </script>
+

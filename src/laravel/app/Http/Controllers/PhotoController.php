@@ -69,7 +69,7 @@ class PhotoController extends Controller
          * foreachなどでループ処理させる際に都度SQLを発行すると処理が遅くなるN＋1問題を回避するために用いる
          * paginate()メソッドはgetメソッド＋ページ送り機能がついた取得メソッド
          */
-        $photos = Photo::with(['owner'])
+        $photos = Photo::with(['owner', 'likes'])
             ->orderBy(Photo::CREATED_AT, 'desc')->paginate();
 
         /**
@@ -111,7 +111,7 @@ class PhotoController extends Controller
     public function show(string $id)
     {
         // commments.authorのようにプロパティに.リレーション名でそれにひもづくデータを取得できる
-        $photo = Photo::where('id', $id)->with(['owner', 'comments.author'])->first();
+        $photo = Photo::where('id', $id)->with(['owner', 'comments.author', 'likes'])->first();
 
         return $photo ?? abort(404);
     }
@@ -132,5 +132,47 @@ class PhotoController extends Controller
         $new_comment = Comment::where('id', $comment->id)->with('author')->first();
 
         return response($new_comment, 201);
+    }
+
+    /**
+     * いいね
+     * @param string $id
+     * @return array
+     */
+    public function like(string $id)
+    {
+        // photosテーブルのidカラムを引数で渡された$idで参照しリレーションで関連づけられたlikesテーブルの情報も合わせて引き出す
+        $photo = Photo::where('id', $id)->with('likes')->first();
+
+        if (!$photo) {
+            abort(404);
+        }
+
+        /**
+         * いいねは1回しかつけられないようにする仕様
+         * 特定の写真及び、ログインユーザーにひもづくいいねを削除してから新たに追加する */ 
+        $photo->likes()->detach(Auth::user()->id);
+        $photo->likes()->attach(Auth::user()->id);
+
+        return ["photo_id" => $id];
+    }
+
+
+    /**
+     * いいね解除
+     * @param string $id
+     * @return array
+     */
+    public function unlike(string $id)
+    {
+        $photo = Photo::where('id', $id)->with('likes')->first();
+
+        if (!$photo) {
+            abort(404);
+        }
+
+        $photo->likes()->detach(Auth::user()->id);
+
+        return ["photo_id" => $id];
     }
 }
