@@ -49,6 +49,7 @@
 </template>
 
 <script>
+// PhotoList->Photo.vueの階層構造を持つ
 export default {
   props: {
     item: {
