@@ -23,7 +23,7 @@
 import Message from './components/Message.vue'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
-import { UNAUTHORIZED, INTERNAL_SERVER_ERROR } from './util'
+import { NOT_FOUND, UNAUTHORIZED, INTERNAL_SERVER_ERROR } from './util'
 
 
 export default {
@@ -55,6 +55,8 @@ export default {
           this.$store.commit('auth/setUser', null)
           // リダイレクト処理
           this.$router.push('/login')
+        } else if (val === NOT_FOUND) {
+          this.$router.push('/not-found')
         }
       },
       // ウォッチャオプション trueにすると初期読み込み時にも関数を呼び出せる
