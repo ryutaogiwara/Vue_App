@@ -14,7 +14,8 @@
   <link rel="stylesheet" href="https://unpkg.com/ionicons@4.2.2/dist/css/ionicons.min.css">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="https://hypertext-candy.s3-ap-northeast-1.amazonaws.com/posts/vue-laravel-tutorial/app.css">
+  <!-- /public/css/app.cssを読み込む。publicにはresources内のsassをコンパイルしたものが入っている -->
+  <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 </head>
 
 <body>
