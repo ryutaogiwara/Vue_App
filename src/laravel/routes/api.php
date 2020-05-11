@@ -32,6 +32,12 @@ Route::put('/photos/{id}/like', 'PhotoController@like')->name('photo.like');
 // いいね削除
 Route::delete('/photos/{id}/like', 'PhotoController@unlike');
 
+// CSRFトークンリフレッシュ
+Route::get('/refresh-token', function (Illuminate\Http\Request $request) {
+  $request->session()->regenerateToken();
+  return response()->json();
+});
+
 
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {

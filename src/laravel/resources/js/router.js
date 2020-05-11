@@ -6,6 +6,7 @@ import PhotoList from './pages/PhotoList.vue'
 import Login from './pages/Login.vue'
 import SystemError from './pages/errors/System.vue'
 import PhotoDetail from './pages/PhotoDetail.vue'
+import NotFound from './pages/errors/NotFound.vue'
 
 import store from './store'
 
@@ -43,6 +44,12 @@ const routes = [
   {
     path: '/500',
     component: SystemError
+  },
+  {
+    // パスに*アスタリスクを指定すると任意のパスという意味になる
+    // 上記のルート以外の任意のパスが指定された際に404エラーページを呼び出す
+    path: '*',
+    component: NotFound
   }
 ]
 

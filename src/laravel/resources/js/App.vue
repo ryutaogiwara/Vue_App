@@ -23,7 +23,7 @@
 import Message from './components/Message.vue'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
-import { INTERNAL_SERVER_ERROR } from './util'
+import { NOT_FOUND, UNAUTHORIZED, INTERNAL_SERVER_ERROR } from './util'
 
 
 export default {
@@ -44,10 +44,19 @@ export default {
   // 算出プロパティの変更を監視する
   watch: {
     errorCode: {
-      handler (val) {
+      async handler (val) {
         // errorCodeの引数にINTERNAL_SERVER_ERRORが入った場合の処理
         if (val === INTERNAL_SERVER_ERROR) {
           this.$router.push('/500')
+        } else if (val === UNAUTHORIZED) {
+          // リフレッシュトークンAPIを叩いてcsrfトークンをリセット
+          await axios.get('/api/refresh-token')
+          // ストアのユーザーをリセット
+          this.$store.commit('auth/setUser', null)
+          // リダイレクト処理
+          this.$router.push('/login')
+        } else if (val === NOT_FOUND) {
+          this.$router.push('/not-found')
         }
       },
       // ウォッチャオプション trueにすると初期読み込み時にも関数を呼び出せる
